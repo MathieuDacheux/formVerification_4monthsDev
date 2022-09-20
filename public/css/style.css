@@ -1,0 +1,264 @@
+/* ROOT SETTINGS */
+
+@font-face {
+    font-family: 'Apple';
+    src: url('../assets/fonts/lucidaGrande/LucidaGrande.ttf');
+}
+
+:root {
+    /* Primary Color */
+
+    --primary100: #2752E7;
+    --primary80: #5275EC;
+    --primary60: #7D97F1;
+    --primary40: #D0DBFF;
+
+    /* Base Color */
+
+    --black100: #2C3131;
+    --black80: #626262;
+    --black60: #A9A9A9;
+    --black40: #CACACA;
+    --black20: #E3E3E3;
+    --black0 : #FFFFFF;
+
+    /* Accent Color */
+
+    --success100: #53D258;
+    --succes80: #75DB79;
+    --succes60: #98E49B;
+    --succes40: #BAEDBC;
+    --succes20: #DDF6DE;
+
+    --error100: #E25C5C;
+    --error80: #E87D7D;
+    --error60: #EE9D9D;
+    --error40: #F3BEBE;
+    --error20: #F9DEDE;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-family: 'Apple', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    background: url(../assets/img/background.svg) no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+/* FONTS SETTINGS */
+
+span {
+    color: var(--black80);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+::placeholder {
+    color: var(--black80);
+    font-family: 'Apple', sans-serif;
+}
+
+/* FORM SETTINGS */
+
+form {
+    height: 550px;
+    width: 350px;
+    padding: 1rem;
+    padding-top: 4rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: var(--black0);
+    background-image: url('../assets/img/backgroundBubble.png');
+}
+
+/* INPUT IMG */
+
+.positionRelative {
+    position: relative;
+}
+
+label {
+    width: 100px;
+    left: -50px;
+    top: -105px;
+    display: flex;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--black60);
+}
+
+label img {
+    width: 50px;
+    height: 50px;
+}
+
+/* GENERAL SETTINGS INPUT SELECT */
+
+.input, select {
+    border: 1.5px solid var(--black60);
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    padding: .5rem 1rem;
+    width: 100%;
+    color: var(--black80);
+    font-weight: 500;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+select {
+    color: var(--primary80);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border: 1.5px solid var(--primary80);
+}
+
+/* CONTAINER INPUT */
+
+.containerInput {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.containerInput input {
+    width: 48%;
+}
+
+.containerInput select {
+    width: 48%;
+}
+
+.containerSelection {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row wrap;
+    margin-bottom: 1rem;
+}
+
+.containerCheckbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-;
+    width: 50%;
+    margin-bottom: .5rem;
+}
+
+.containerCheckbox input {
+    margin-bottom: 0rem;
+    margin-right: .5rem;
+}
+
+.containerCheckbox span {
+    width: 80%;
+}
+
+.containerSelection .containerCheckbox:nth-child(5), .containerSelection .containerCheckbox:last-child {
+    margin-bottom: 0;
+}
+
+/* TEXTAREA */
+
+textarea {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    resize: none;
+    border: 1.5px solid var(--black60);
+    padding: .1rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* BUTTON */
+
+button {
+    border: 0px;
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    background-color: var(--primary100);
+    font-weight: 700;
+    color: var(--black0);
+    text-transform: uppercase;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+button:disabled {
+    background-color: var(--primary40);
+}
+
+/* MODAL PASSWORD */
+
+.indicatorPassword {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ul {
+    top: 35px;
+    padding-left: 1rem;
+    position: absolute;
+    z-index: 3;
+    background-color: var(--black0);
+    border-radius: 5px;
+    width: calc(350px - 2rem);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+li {
+    font-weight: 400;
+    color: var(--error80);
+    width: 50%;
+}
+
+ul li:nth-child(2) {
+    padding: .75rem 0rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* CHECKBOX */
+
+input[type='checkbox'] {
+    accent-color: var(--primary100);
+}
