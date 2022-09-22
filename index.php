@@ -1,55 +1,35 @@
 <?php
     $countries = array ("Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua &amp; Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia &amp; Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Cape Verde","Cayman Islands","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cruise Ship","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kuwait","Kyrgyz Republic","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Namibia","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","Norway","Oman","Pakistan","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre &amp; Miquelon","Samoa","San Marino","Satellite","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Kitts &amp; Nevis","St Lucia","St Vincent","St. Lucia","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad &amp; Tobago","Tunisia","Turkey","Turkmenistan","Turks &amp; Caicos","Uganda","Ukraine","United Arab Emirates","United Kingdom","Uruguay","Uzbekistan","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe");
-    $degree = array ("Sans", "Baccalauréat", "Baccalauréat +2", "Baccalauréat +3", "Baccalauréat +5", "Doctorat");
+    $graduate = array ("Sans", "Baccalauréat", "Baccalauréat +2", "Baccalauréat +3", "Baccalauréat +5", "Doctorat");
     
     include './public/php/regex.php';
     
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         include './public/php/data.php';
+        include './public/php/functions.php';
         foreach ($inputs as $key => $input) {
             // Nettoyage
-            $input['value'] .= trim(filter_input(INPUT_POST, $key, $input['filter']));
+            $input['value'] = trim(filter_input(INPUT_POST, $key, $input['filter']));
             // Validation
             if ($key == 'birthCountry') {
-                if (empty($input['value'])) {
-                    $input['error'] .= 'Ce champ est obligatoire';
-                } else if (in_array($input['value'], $countries) == false) {
-                    $input['error'] .= 'La donnée n\'est pas conforme';
-                } else {
-                    if (!$isOk) {
-                        $isOk = filter_var($input['value'], FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => '/'.$input['regex'].'/')));
-                    } else {
-                        $input['value'] = $isOk;
-                    }
-                }
+                $inputs[$key] = validationFromArray($input, $countries);
             } else if ($key == 'graduate') {
-                if (empty($input['value'])) {
-                    $input['error'] .= 'Ce champ est obligatoire';
-                } else if (in_array($input['value'], $degree) == false) {
-                    $input['error'] .= 'La donnée n\'est pas conforme';
-                } else {
-                    if (!$isOk) {
-                        $isOk = filter_var($input['value'], FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => '/'.$input['regex'].'/')));
-                    } else {
-                        $input['value'] = $isOk;
-                    }
-                }
+                $inputs[$key] = validationFromArray($input, $graduate);
+            } else if ($key == 'zipCode') {
+                $inputs[$key] = validationdInput($input);
             } else {
-                if (empty($input['value'])) {
-                    $input['error'] .= 'Ce champ est obligatoire';
-                } else {
-                    $isOk = filter_var($input['value'], FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => '/'.$input['regex'].'/')));
-                    if (!$isOk) {
-                        $input['error'] .= 'La donnée n\'est pas conforme';
-                    } else {
-                        $input['value'] = $isOk;
-                    }
-                }
+                $inputs[$key] = validationdInput($input);
             }
-        $inputs[$key] = $input;
+        }
+        $languages = filter_input(INPUT_POST, 'language', FILTER_SANITIZE_NUMBER_INT, FILTER_REQUIRE_ARRAY) ?? [];
+        foreach ($languages as $key => $language) {
+            if (!$language == '1' ||  !$language == '2' || !$language == '3' || !$language == '4') {
+                $errorLanguages = 'La donnée n\'est pas conforme';
+            }
+            $languages[$key] = $language;
+        }
+        var_dump($languages);
     }
-    var_dump($inputs);
-}
 ?>
 
 <!DOCTYPE html>
@@ -80,8 +60,8 @@
 
             <!-- Input nom et prénom -->
             <div class="containerInput">
-                <input value="<?= $inputs['lastname']['value'] ?? '' ?>" class="input" type="text" name="lastname" id="lastname" placeholder="Nom" pattern="<?= REGEX_NO_NUMBER ?>"required>
-                <input class="input" type="text" name="firstname" id="firstname" placeholder="Prénom" pattern="<?= REGEX_NO_NUMBER ?>" required>
+                <input value="<?= $inputs['lastname']['value'] ?? '' ?>" class="input" type="text" name="lastname" id="lastname" placeholder="Nom" pattern="<?= REGEX_NO_NUMBER ?>" required>
+                <input value="<?= $inputs['firstname']['value'] ?? '' ?>" class="input" type="text" name="firstname" id="firstname" placeholder="Prénom" pattern="<?= REGEX_NO_NUMBER ?>" required>
             </div>
 
             <!-- Input date de naissance -->
@@ -97,11 +77,14 @@
                         }
                     ?>
                 </select>
-                <input class="input" type="number" name="zipCode" id="zipCode" placeholder="Code postal" pattern="[0-9]{5}">
+                <input value="<?= $inputs['zipCode']['value'] ?? '' ?>" class="input" type="number" name="zipCode" id="zipCode" placeholder="Code postal" pattern="[0-9]{5}">
             </div>
 
             <!-- Input mail -->
-            <input class="input" type="email" name="email" id="email" placeholder="exemple@app.com">
+            <input value="<?= $inputs['email']['value'] ?? '' ?>" class="input" type="email" name="email" id="email" placeholder="exemple@app.com">
+            
+            <!-- Input MDP -->
+            <input class="input" type="password" name="password" id="password" placeholder="Mot de passe" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
             <div class="indicatorPassword hidden">
                 <ul>
                     <li class="minLenght">8 caractères minimum</li>
@@ -110,11 +93,8 @@
                 </ul>
             </div>
 
-            <!-- Input MDP -->
-            <input class="input" type="password" name="password" id="password" placeholder="Mot de passe" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
-
             <!-- Input URL LinkedIn -->
-            <input class="input" type="url" name="linkedinAccount" id="linkedinAccount" placeholder="URL de compte LinkedIn" pattern="/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/">
+            <input value="<?= $inputs['linkedinAccount']['value'] ?? '' ?>" class="input" type="url" name="linkedinAccount" id="linkedinAccount" placeholder="URL de compte LinkedIn" pattern="/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/">
 
             <!-- Input niveau d'étude -->
             <select name="graduate" id="graduate" required>
@@ -129,16 +109,16 @@
             <!-- Input compétence en programmation -->
             <div class="containerSelection">
                 <div class="containerCheckbox">
-                    <input type="checkbox" name="htmlCss" id="htmlCss"><span>HTML / CSS</span>
+                    <input type="checkbox" name="language[]" id="htmlCss" value="1" <?= (!empty($languages) && in_array('1', $languages)) ? 'checked' : '';?>><span>HTML / CSS</span>
                 </div>
                 <div class="containerCheckbox">
-                    <input type="checkbox" name="javascript" id="javascript"><span>Javscript</span> 
+                    <input type="checkbox" name="language[]" id="javascript" value="2" <?= (!empty($languages) && in_array('2', $languages)) ? 'checked' : '';?>><span>Javscript</span> 
                 </div>
                 <div class="containerCheckbox">
-                    <input type="checkbox" name="php" id="php"><span>Php</span>
+                    <input type="checkbox" name="language[]" id="php" value="3" <?= (!empty($languages) && in_array('3', $languages)) ? 'checked' : '';?>><span>Php</span>
                 </div>
                 <div class="containerCheckbox">
-                    <input type="checkbox" name="python" id="python"><span>Python</span>
+                    <input type="checkbox" name="language[]" id="python" value="4" <?= (!empty($languages) && in_array('4', $languages)) ? 'checked' : '';?>><span>Python</span>
                 </div>
             </div>
 
