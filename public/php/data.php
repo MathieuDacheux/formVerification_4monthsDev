@@ -1,5 +1,12 @@
 <?php
     $inputs = [
+        'experience' => [
+            'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
+            'regex' => REGEX_TEXTAREA,
+            'error' => '',
+            'value' => '',
+            'required' => false,
+        ],
         'graduate' => [
             'filter' => FILTER_SANITIZE_SPECIAL_CHARS,
             'regex' => REGEX_NO_NUMBER,

@@ -28,7 +28,7 @@
             }
             $languages[$key] = $language;
         }
-        var_dump($languages);
+        var_dump($inputs);
     }
 ?>
 
@@ -123,7 +123,7 @@
             </div>
 
             <!-- TextArea pour l'expérience -->
-            <textarea name="experience" id="experience" placeholder="Racontez-nous une expérience"></textarea>
+            <textarea name="experience" id="experience" placeholder="Racontez-nous votre expérience"></textarea>
 
             <!-- Boutton d'envoie -->
             <button type="submit">Envoyez</button>
