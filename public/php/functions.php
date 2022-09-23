@@ -1,5 +1,4 @@
 <?php
-
     function validationdInput($input) {
         if (empty($input['value']) && $input['required'] == true) {
             $input['error'] = 'Ce champ est obligatoire';
@@ -13,7 +12,7 @@
         }
         return $input;
     };
-
+ 
     function validationFromArray($input, $array) {
         if (empty($input['value']) && $input['required'] == true) {
             $input['error'] = 'Ce champ est obligatoire';
@@ -27,10 +26,3 @@
         }
         return $input;
     };
-
-    function validateCheckbox($languages) {
-        
-        return $languages;
-    }
-
-?>

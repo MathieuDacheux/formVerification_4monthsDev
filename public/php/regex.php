@@ -5,4 +5,5 @@
     define('REGEX_FIVE_NUMBERS', "[0-9]{5}");
     define('REGEX_URL_LINKEDIN', "^(https?:\/\/)?(www\.linkedin\.com\/in\/)([a-z0-9-_\.]+)\/?$");
     define('REGEX_TEXTAREA', "");
+    define('REGEX_PASSWORD', "/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$&*])[A-Za-z\d!@#$&*]{8,}/")
 ?>
