@@ -21,28 +21,87 @@
                 $inputs[$key] = validationdInput($input);
             }
         }
+
+        // Traitement des éléments checbox
         $languages = filter_input(INPUT_POST, 'language', FILTER_SANITIZE_NUMBER_INT, FILTER_REQUIRE_ARRAY) ?? [];
+
         foreach ($languages as $key => $language) {
-            if (!$language == '1' ||  !$language == '2' || !$language == '3' || !$language == '4') {
+            if ($language < 1 || $language > 4) {
                 $errorLanguages = 'La donnée n\'est pas conforme';
             }
-            $languages[$key] = $language;
         }
 
+        // Récupération du mot de passe en brut
         $password = [ 
             'password' => [
                 'value' => $_POST['password'],
                 'error' => '',
             ],
         ];
+
         if (preg_match(REGEX_PASSWORD, $password['password']['value']) == 1) {
             $inputs += $password;
         } else {
             $password['password']['error'] = 'La donnée n\'est pas conforme';
             $inputs += $password;
         }
-        var_dump($inputs);
-    }
+
+        $target_dir = './public/upload';
+        $target_file = $target_dir
+          . basename($_FILES["profilPicture"]["name"]);
+        $uploadOk = 1;
+        
+          // Check if file was uploaded without errors
+          if(isset($_FILES["profilPicture"]) && 
+              $_FILES["profilPicture"]["error"] == 0) {
+              $allowed_ext = array("jpg" => "image/jpg",
+                                  "jpeg" => "image/jpeg",
+                                  "gif" => "image/gif",
+                                  "png" => "image/png");
+              $file_name = $_FILES["profilPicture"]["name"];
+              $file_type = $_FILES["profilPicture"]["type"];
+              $file_size = $_FILES["profilPicture"]["size"];
+            
+              // Verify file extension
+              $ext = pathinfo($file_name, PATHINFO_EXTENSION);
+        
+              if (!array_key_exists($ext, $allowed_ext)) {
+                  die("Error: Please select a valid file format.");
+              }    
+                    
+              // Verify file size - 2MB max
+              $maxsize = 2 * 1024 * 1024;
+                
+              if ($file_size > $maxsize) {
+                  die("Error: File size is larger than the allowed limit.");
+              }                    
+            
+              // Verify MYME type of the file
+              if (in_array($file_type, $allowed_ext))
+              {
+                  // Check whether file exists before uploading it
+                  if (file_exists("upload/" . $_FILES["profilPicture"]["name"])) {
+                      echo $_FILES["profilPicture"]["name"]." is already exists.";
+                  }        
+                  else {
+                      if (move_uploaded_file($_FILES["profilPicture"]["tmp_name"], 
+                        $target_file)) {
+                          echo "The file ".  $_FILES["profilPicture"]["name"]. 
+                            " has been uploaded.";
+                      } 
+                      else {
+                          echo "Sorry, there was an error uploading your file.";
+                      }
+                  }
+              }
+              else {
+                  echo "Error: Please try again.";
+              }
+          }
+          else {
+              echo "Error: ". $_FILES["profilPicture"]["error"];
+          }
+      }
 ?>
 
 <!DOCTYPE html>
@@ -61,12 +120,12 @@
 
         
         <!-- Formulaire -->
-        <form novalidate method="post">
+        <form novalidate method="post" enctype="multipart/form-data">
 
             <!-- Titre -->
             <div class="positionRelative">
                 <label for="profilPicture">
-                    <img src="./public/assets/icons/camera.svg" alt="" srcset="">
+                    <img src="<?= (!empty($target_file)) ? $target_file : './public/assets/icons/camera.svg' ?>" alt="" srcset="">
                 </label>
             </div>
             <input type="file" name="profilPicture" id="profilPicture" hidden>
